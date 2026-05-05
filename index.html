@@ -7,43 +7,56 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SimpleCare">
-  <meta name="theme-color" content="#f5f0eb">
-  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <title>SimpleCare</title>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
- 
+
     :root {
-      --bg:        #f5f0eb;
+      /* ── Paleta SimpleCare ── */
+      --bg:        #f4f6f8;
       --surface:   #ffffff;
-      --border:    #ddd8d0;
-      --border2:   #c8c2b8;
-      --text:      #1a1714;
-      --muted:     #7a7368;
-      --accent:    #1d6b4f;
-      --accent-lt: #eaf4ef;
-      --accent-bd: #a8d4bf;
-      --blue:      #1a4f8a;
-      --blue-lt:   #e8f0fb;
-      --blue-bd:   #a0bcde;
-      --amber:     #8a5a00;
+      --border:    #dde3e8;
+      --border2:   #bab5bf;
+      --text:      #000353;        /* azul marino marca */
+      --muted:     #6b7a8d;
+
+      /* Verde agua — acento principal */
+      --accent:    #30C5B7;
+      --accent-dk: #22a89c;        /* hover/pressed */
+      --accent-lt: #e8f9f8;
+      --accent-bd: #a0ddd8;
+
+      /* Azul claro — dispositivos SC-10 */
+      --blue:      #0dcacd;
+      --blue-lt:   #e5f8f9;
+      --blue-bd:   #7dd8da;
+
+      /* Gris azulado — secundario / SC-20 */
+      --purple:    #4a5568;
+      --purple-lt: #eef0f3;
+      --purple-bd: #bab5bf;
+
+      /* Ámbar — batería */
+      --amber:     #c47a00;
       --amber-lt:  #fdf3e3;
-      --amber-bd:  #d4aa60;
-      --rose:      #8a1a3a;
-      --rose-lt:   #fdeef3;
-      --rose-bd:   #d4a0b0;
-      --purple:    #5a3a8a;
-      --purple-lt: #f0eafa;
-      --purple-bd: #b8a0d4;
+      --amber-bd:  #e8bc6a;
+
+      /* Rosa — alerta/error */
+      --rose:      #c0394b;
+      --rose-lt:   #fdeef0;
+      --rose-bd:   #e8a0aa;
+
       --radius:    20px;
       --radius-sm: 14px;
     }
- 
+
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100svh;
@@ -52,7 +65,7 @@
       max-width: 430px;
       margin: 0 auto;
     }
- 
+
     /* ── Header ── */
     .header {
       padding: 52px 22px 20px;
@@ -64,10 +77,10 @@
     }
     .header-logo { width:52px; height:52px; border-radius:14px; overflow:hidden; flex-shrink:0; border:1.5px solid var(--border); }
     .header-logo img { width:100%; height:100%; object-fit:contain; }
-    .brand { font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--accent); font-weight:600; margin-bottom:3px; }
-    .header-title { font-family:'Lora',serif; font-size:20px; font-weight:700; color:var(--text); letter-spacing:-0.3px; line-height:1.2; }
-    .header-sub { font-size:13px; color:var(--muted); margin-top:3px; }
- 
+    .brand { font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--accent); font-weight:700; margin-bottom:3px; }
+    .header-title { font-family:'Montserrat',sans-serif; font-size:19px; font-weight:700; color:var(--text); letter-spacing:-0.3px; line-height:1.2; }
+    .header-sub { font-size:13px; color:var(--muted); margin-top:3px; font-weight:400; }
+
     /* ── Agenda selector ── */
     .agenda-bar {
       margin: 14px 20px 0;
@@ -76,7 +89,7 @@
       border: 1.5px solid var(--border);
       overflow: hidden;
     }
- 
+
     .agenda-bar-header {
       display: flex;
       align-items: center;
@@ -85,24 +98,24 @@
       cursor: pointer;
       user-select: none;
     }
- 
+
     .agenda-bar-left { display: flex; align-items: center; gap: 10px; }
- 
+
     .device-dot {
       width: 10px; height: 10px; border-radius: 50%;
       background: var(--accent);
       flex-shrink: 0;
     }
     .device-dot.sc10 { background: var(--blue); }
-    .device-dot.sc20 { background: var(--purple); }
- 
+    .device-dot.sc20 { background: var(--border2); }
+
     .agenda-selected-name {
-      font-family: 'Lora', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--text);
     }
- 
+
     .agenda-selected-tipo {
       font-size: 11px;
       text-transform: uppercase;
@@ -114,21 +127,20 @@
     }
     .agenda-selected-tipo.sc10 { background: var(--blue-lt); color: var(--blue); border: 1px solid var(--blue-bd); }
     .agenda-selected-tipo.sc20 { background: var(--purple-lt); color: var(--purple); border: 1px solid var(--purple-bd); }
- 
     .agenda-chevron {
       color: var(--muted);
       transition: transform 0.2s;
       flex-shrink: 0;
     }
     .agenda-chevron.open { transform: rotate(180deg); }
- 
+
     /* Lista desplegable */
     .agenda-list {
       display: none;
       border-top: 1.5px solid var(--border);
     }
     .agenda-list.open { display: block; }
- 
+
     .agenda-item {
       display: flex;
       align-items: center;
@@ -141,17 +153,17 @@
     .agenda-item:last-child { border-bottom: none; }
     .agenda-item:active { background: var(--bg); }
     .agenda-item.active { background: var(--accent-lt); }
- 
+
     .agenda-item-info { flex: 1; }
     .agenda-item-name { font-size: 16px; font-weight: 600; color: var(--text); }
     .agenda-item-phone { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: monospace; }
- 
+
     .agenda-item-check {
       color: var(--accent);
       opacity: 0;
     }
     .agenda-item.active .agenda-item-check { opacity: 1; }
- 
+
     .agenda-add-btn {
       display: flex;
       align-items: center;
@@ -164,7 +176,7 @@
       border-top: 1.5px solid var(--border);
       background: var(--accent-lt);
     }
- 
+
     /* ── Toast de nuevo dispositivo ── */
     .toast-new {
       position: fixed;
@@ -180,16 +192,16 @@
       box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
     }
     .toast-new.show { transform: translateX(-50%) translateY(0); }
- 
+
     .toast-new-title {
-      font-family: 'Lora', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--text);
       margin-bottom: 6px;
     }
     .toast-new-sub { font-size: 15px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
- 
+
     .toast-new-device {
       background: var(--bg);
       border: 1.5px solid var(--border);
@@ -197,11 +209,21 @@
       padding: 14px 16px;
       margin-bottom: 18px;
     }
-    .toast-new-device-name { font-size: 18px; font-weight: 700; font-family: 'Lora', serif; color: var(--text); }
+    .toast-new-device-name { font-size: 18px; font-weight: 700; font-family: 'Montserrat', sans-serif; color: var(--text); }
     .toast-new-device-phone { font-size: 14px; color: var(--muted); margin-top: 2px; font-family: monospace; }
- 
+
     .toast-btns { display: flex; gap: 10px; }
- 
+
+    /* Selector tipo dispositivo */
+    .tipo-selector { display: flex; gap: 8px; margin-bottom: 18px; }
+    .tipo-btn { flex:1; padding:12px 8px; border-radius:12px; border:1.5px solid var(--border); background:var(--bg); font-family:'Montserrat',sans-serif; font-size:14px; font-weight:600; color:var(--muted); cursor:pointer; text-align:center; transition:all 0.15s; }
+    .tipo-btn .tipo-label { display:block; font-size:16px; color:var(--text); margin-bottom:2px; }
+    .tipo-btn .tipo-sub   { display:block; font-size:11px; font-weight:400; }
+    .tipo-btn.active-sc10 { border-color:var(--blue-bd); background:var(--blue-lt); }
+    .tipo-btn.active-sc10 .tipo-label { color:var(--blue); }
+    .tipo-btn.active-sc20 { border-color:var(--accent-bd); background:var(--accent-lt); }
+    .tipo-btn.active-sc20 .tipo-label { color:var(--accent-dk); }
+
     .btn-primary {
       flex: 1;
       background: var(--accent);
@@ -211,12 +233,12 @@
       padding: 14px;
       font-size: 16px;
       font-weight: 600;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       cursor: pointer;
       transition: opacity 0.15s;
     }
     .btn-primary:active { opacity: 0.8; }
- 
+
     .btn-secondary {
       flex: 1;
       background: var(--bg);
@@ -226,10 +248,10 @@
       padding: 14px;
       font-size: 16px;
       font-weight: 600;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       cursor: pointer;
     }
- 
+
     /* ── Overlay ── */
     .overlay {
       display: none;
@@ -239,7 +261,7 @@
       z-index: 99;
     }
     .overlay.show { display: block; }
- 
+
     /* ── Section label ── */
     .section-label {
       font-size: 11px;
@@ -249,7 +271,7 @@
       font-weight: 600;
       padding: 18px 22px 10px;
     }
- 
+
     /* ── Cards ── */
     .messages-list {
       flex: 1;
@@ -258,7 +280,7 @@
       flex-direction: column;
       gap: 10px;
     }
- 
+
     .msg-card {
       background: var(--surface);
       border: 1.5px solid var(--border);
@@ -272,10 +294,10 @@
       position: relative;
     }
     .msg-card:active { transform: scale(0.975); }
- 
-    .msg-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.2; }
+
+    .msg-label { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.2; }
     .msg-sub   { font-size:13px; color:var(--muted); margin-top:3px; }
- 
+
     .msg-icon {
       position: absolute;
       right: 18px; top: 50%;
@@ -285,52 +307,51 @@
       display: flex; align-items: center; justify-content: center;
     }
     .msg-icon svg { width:22px; height:22px; }
- 
+
     .msg-card.loc  { border-color:var(--blue-bd); }
     .msg-card.loc  .msg-icon { background:var(--blue-lt); color:var(--blue); border:1.5px solid var(--blue-bd); }
     .msg-card.bat  { border-color:var(--amber-bd); }
     .msg-card.bat  .msg-icon { background:var(--amber-lt); color:var(--amber); border:1.5px solid var(--amber-bd); }
     .msg-card.find { border-color:var(--rose-bd); }
     .msg-card.find .msg-icon { background:var(--rose-lt); color:var(--rose); border:1.5px solid var(--rose-bd); }
- 
+
     .msg-card.msg   { border-color:var(--purple-bd); cursor:default; padding:20px 22px 18px; }
     .msg-card.msg:active { transform:none; }
     .msg-card.alarm { border-color:var(--accent-bd); cursor:default; padding:20px 22px 18px; }
     .msg-card.alarm:active { transform:none; }
- 
+
     @keyframes flashCard {
       0%  { background:var(--surface); }
       40% { background:var(--accent-lt); border-color:var(--accent-bd); }
       100%{ background:var(--surface); }
     }
     .msg-card.sent { animation:flashCard 0.65s ease; }
- 
+
     /* ── Msg libre ── */
-    .msg-free-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+    .msg-free-label { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:10px; }
     .msg-free-label svg { width:22px; height:22px; color:var(--purple); flex-shrink:0; }
-    .badge-sc20 { font-size:10px; text-transform:uppercase; letter-spacing:0.8px; font-weight:600; color:var(--purple); background:var(--purple-lt); border:1px solid var(--purple-bd); border-radius:6px; padding:3px 10px; display:inline-block; margin-bottom:12px; }
-    .msg-textarea { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; font-size:17px; color:var(--text); font-family:'DM Sans',sans-serif; resize:none; outline:none; line-height:1.5; }
+    .badge-sc20 { font-size:10px; text-transform:uppercase; letter-spacing:0.8px; font-weight:600; color:var(--purple); background:var(--purple-lt); border:1px solid var(--purple-bd); border-radius:6px; padding:3px 10px; display:inline-block; margin-bottom:12px; }    .msg-textarea { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; font-size:17px; color:var(--text); font-family:'Montserrat',sans-serif; resize:none; outline:none; line-height:1.5; }
     .msg-textarea:focus { border-color:var(--purple-bd); background:#fff; }
     .msg-textarea::placeholder { color:var(--muted); }
     .msg-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
     .msg-counter { font-size:13px; color:var(--muted); }
     .msg-counter.warn { color:var(--amber); }
     .msg-counter.over { color:var(--rose); }
-    .msg-send-btn { background:var(--purple); border:none; color:#fff; font-size:15px; font-weight:600; border-radius:10px; padding:10px 20px; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:7px; }
+    .msg-send-btn { background:var(--accent); border:none; color:#fff; font-size:15px; font-weight:600; border-radius:10px; padding:10px 20px; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; gap:7px; }
     .msg-send-btn svg { width:14px; height:14px; }
     .msg-send-btn:active { opacity:0.8; }
- 
+
     /* ── Alarm ── */
-    .alarm-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+    .alarm-label { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
     .alarm-label svg { width:22px; height:22px; color:var(--accent); flex-shrink:0; }
     .alarm-row { margin-bottom:16px; }
     .alarm-row-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:600; margin-bottom:8px; }
     .alarm-time { display:flex; align-items:center; gap:8px; }
-    .alarm-time-input { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:10px 8px; font-size:28px; font-weight:700; color:var(--text); font-family:'Lora',serif; width:72px; text-align:center; outline:none; }
+    .alarm-time-input { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:10px 8px; font-size:28px; font-weight:700; color:var(--text); font-family:'Montserrat',sans-serif; width:72px; text-align:center; outline:none; }
     .alarm-time-input:focus { border-color:var(--accent-bd); background:#fff; }
-    .alarm-time-sep { font-size:28px; font-weight:700; color:var(--muted); font-family:'Lora',serif; }
+    .alarm-time-sep { font-size:28px; font-weight:700; color:var(--muted); font-family:'Montserrat',sans-serif; }
     .alarm-days { display:flex; gap:8px; flex-wrap:wrap; }
-    .alarm-day { width:40px; height:40px; border-radius:50%; background:var(--bg); border:1.5px solid var(--border); color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'DM Sans',sans-serif; transition:background 0.15s,color 0.15s,border-color 0.15s; }
+    .alarm-day { width:40px; height:40px; border-radius:50%; background:var(--bg); border:1.5px solid var(--border); color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; transition:background 0.15s,color 0.15s,border-color 0.15s; }
     .alarm-day.active { background:var(--accent-lt); border-color:var(--accent-bd); color:var(--accent); }
     .alarm-toggle-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:12px 14px; background:var(--bg); border-radius:12px; border:1.5px solid var(--border); }
     .alarm-toggle-label { font-size:16px; color:var(--text); font-weight:500; }
@@ -340,39 +361,39 @@
     .alarm-toggle-slider:before { content:''; position:absolute; width:22px; height:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform 0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.15); }
     .alarm-toggle input:checked + .alarm-toggle-slider { background:var(--accent); }
     .alarm-toggle input:checked + .alarm-toggle-slider:before { transform:translateX(20px); }
-    .alarm-send-btn { width:100%; background:var(--accent); border:none; color:#fff; font-size:17px; font-weight:600; border-radius:14px; padding:14px; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .alarm-send-btn { width:100%; background:var(--accent); border:none; color:#fff; font-size:17px; font-weight:600; border-radius:14px; padding:14px; cursor:pointer; font-family:'Montserrat',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
     .alarm-send-btn:active { opacity:0.8; }
     .alarm-send-btn svg { width:16px; height:16px; }
- 
+
     /* ── Footer ── */
     .footer { padding:20px 22px 32px; border-top:1.5px solid var(--border); margin-top:4px; background:var(--surface); }
     .footer-note { font-size:14px; color:var(--muted); text-align:center; line-height:1.7; }
     .footer-note span { color:var(--accent); font-weight:600; }
- 
+
     /* ── Error ── */
     .error-box { margin:4px 0; padding:22px; background:var(--rose-lt); border:1.5px solid var(--rose-bd); border-radius:var(--radius); text-align:center; }
     .error-box p { font-size:16px; color:var(--rose); line-height:1.7; }
     .error-box code { font-family:monospace; font-size:13px; background:rgba(0,0,0,0.06); padding:3px 10px; border-radius:6px; display:inline-block; margin-top:10px; color:var(--text); }
- 
+
     /* ── Sin dispositivos ── */
     .empty-state { padding:40px 22px; text-align:center; }
     .empty-state-icon { font-size:48px; margin-bottom:16px; }
-    .empty-state-title { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .empty-state-title { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:8px; }
     .empty-state-sub { font-size:15px; color:var(--muted); line-height:1.6; }
   </style>
 </head>
 <body>
- 
+
 <!-- Header -->
 <div class="header">
-  <div class="header-logo"><img src="icon.png" alt="SimpleCare"></div>
+  <div class="header-logo"><img src="icon-512.png" alt="SimpleCare"></div>
   <div>
     <div class="brand">SimpleCare</div>
     <div class="header-title">Plataforma SC-10 y SC-20</div>
     <div class="header-sub" id="header-sub">Selecciona un dispositivo</div>
   </div>
 </div>
- 
+
 <!-- Selector de dispositivo -->
 <div class="agenda-bar" id="agenda-bar" style="display:none;">
   <div class="agenda-bar-header" id="agenda-bar-header">
@@ -387,11 +408,11 @@
   </div>
   <div class="agenda-list" id="agenda-list"></div>
 </div>
- 
+
 <!-- Comandos -->
 <div class="section-label" id="section-label" style="display:none;">Selecciona un comando</div>
 <div class="messages-list" id="messages-list"></div>
- 
+
 <!-- Footer -->
 <div class="footer" id="footer" style="display:none;">
   <div class="footer-note">
@@ -399,24 +420,34 @@
     Solo presiona <span>Enviar</span>
   </div>
 </div>
- 
+
 <!-- Overlay -->
 <div class="overlay" id="overlay"></div>
- 
+
 <!-- Toast: nuevo dispositivo detectado -->
 <div class="toast-new" id="toast-new">
   <div class="toast-new-title">Nuevo dispositivo</div>
-  <div class="toast-new-sub">¿Quieres agregar este dispositivo a tu agenda para acceder fácilmente?</div>
+  <div class="toast-new-sub">¿Quieres agregar este dispositivo a tu agenda?</div>
   <div class="toast-new-device">
     <div class="toast-new-device-name" id="toast-nombre">—</div>
     <div class="toast-new-device-phone" id="toast-phone">—</div>
+  </div>
+  <div class="tipo-selector">
+    <button class="tipo-btn active-sc10" id="tipo-sc10" onclick="seleccionarTipo('SC10')">
+      <span class="tipo-label">SC-10</span>
+      <span class="tipo-sub">GPS · Botón SOS</span>
+    </button>
+    <button class="tipo-btn" id="tipo-sc20" onclick="seleccionarTipo('SC20')">
+      <span class="tipo-label">SC-20</span>
+      <span class="tipo-sub">Smartwatch</span>
+    </button>
   </div>
   <div class="toast-btns">
     <button class="btn-primary" id="toast-agregar">Agregar a agenda</button>
     <button class="btn-secondary" id="toast-saltar">Usar sin guardar</button>
   </div>
 </div>
- 
+
 <script>
 // ─────────────────────────────────────────
 // STORAGE
@@ -433,12 +464,12 @@ function getActiveIdx() {
 function saveActiveIdx(i) {
   try { localStorage.setItem('sc_active', String(i)); } catch(e) {}
 }
- 
+
 // ─────────────────────────────────────────
 // ESTADO GLOBAL
 // ─────────────────────────────────────────
 var currentDevice = null; // { nombre, telefono, tipo } — SC10 o SC20
- 
+
 // ─────────────────────────────────────────
 // PARSEAR URL
 // ─────────────────────────────────────────
@@ -449,13 +480,13 @@ try {
   params.nombre = up.get('nombre') || '';
   params.tipo   = (up.get('tipo')  || 'SC10').toUpperCase();
 } catch(e) {}
- 
+
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
   var devices = getDevices();
- 
+
   if (params.to && params.to.length > 4) {
     // Hay un dispositivo en la URL
     var nuevo = { nombre: params.nombre || params.to, telefono: params.to, tipo: params.tipo };
@@ -478,17 +509,29 @@ window.addEventListener('DOMContentLoaded', function() {
     renderVacio();
   }
 });
- 
+
 // ─────────────────────────────────────────
 // TOAST NUEVO DISPOSITIVO
 // ─────────────────────────────────────────
+var _tipoSeleccionado = 'SC10';
+
+function seleccionarTipo(tipo) {
+  _tipoSeleccionado = tipo;
+  document.getElementById('tipo-sc10').className = 'tipo-btn' + (tipo === 'SC10' ? ' active-sc10' : '');
+  document.getElementById('tipo-sc20').className = 'tipo-btn' + (tipo === 'SC20' ? ' active-sc20' : '');
+}
+
 function mostrarToastNuevo(nuevo, devices) {
   document.getElementById('toast-nombre').textContent = nuevo.nombre;
   document.getElementById('toast-phone').textContent  = nuevo.telefono.startsWith('+') ? nuevo.telefono : '+'+nuevo.telefono;
+  // Preseleccionar tipo si viene en el URL
+  _tipoSeleccionado = nuevo.tipo || 'SC10';
+  seleccionarTipo(_tipoSeleccionado);
   document.getElementById('toast-new').classList.add('show');
   document.getElementById('overlay').classList.add('show');
- 
+
   document.getElementById('toast-agregar').onclick = function() {
+    nuevo.tipo = _tipoSeleccionado;
     devices.push(nuevo);
     saveDevices(devices);
     var idx = devices.length - 1;
@@ -496,20 +539,20 @@ function mostrarToastNuevo(nuevo, devices) {
     cerrarToast();
     renderApp(devices, idx);
   };
- 
+
   document.getElementById('toast-saltar').onclick = function() {
+    nuevo.tipo = _tipoSeleccionado;
     cerrarToast();
-    // Usar sin guardar: agrega temporalmente
     var temp = devices.concat([nuevo]);
-    renderApp(temp, temp.length - 1, true); // true = no persistir
+    renderApp(temp, temp.length - 1, true);
   };
 }
- 
+
 function cerrarToast() {
   document.getElementById('toast-new').classList.remove('show');
   document.getElementById('overlay').classList.remove('show');
 }
- 
+
 // ─────────────────────────────────────────
 // RENDER ESTADO VACÍO
 // ─────────────────────────────────────────
@@ -521,22 +564,22 @@ function renderVacio() {
       '<div class="empty-state-sub">Abre el link personalizado que te enviamos por WhatsApp para agregar tu primer dispositivo.</div>' +
     '</div>';
 }
- 
+
 // ─────────────────────────────────────────
 // RENDER PRINCIPAL
 // ─────────────────────────────────────────
 function renderApp(devices, activeIdx, temporal) {
   currentDevice = devices[activeIdx];
   document.getElementById('header-sub').textContent = 'Listo para enviar comandos';
- 
+
   // Mostrar/ocultar elementos
   document.getElementById('section-label').style.display = '';
   document.getElementById('footer').style.display = '';
- 
+
   renderAgenda(devices, activeIdx, temporal);
   renderComandos(currentDevice);
 }
- 
+
 // ─────────────────────────────────────────
 // AGENDA SELECTOR
 // ─────────────────────────────────────────
@@ -547,15 +590,15 @@ function renderAgenda(devices, activeIdx, temporal) {
   var tipoEl  = document.getElementById('agenda-selected-tipo');
   var listEl  = document.getElementById('agenda-list');
   var chevron = document.getElementById('agenda-chevron');
- 
+
   bar.style.display = '';
- 
+
   var d = devices[activeIdx];
   nameEl.textContent  = d.nombre;
   tipoEl.textContent  = d.tipo;
   tipoEl.className    = 'agenda-selected-tipo ' + d.tipo.toLowerCase();
   dot.className       = 'device-dot ' + d.tipo.toLowerCase();
- 
+
   // Lista desplegable
   var items = devices.map(function(dev, i) {
     return '<div class="agenda-item' + (i === activeIdx ? ' active' : '') + '" data-idx="'+i+'">' +
@@ -567,13 +610,13 @@ function renderAgenda(devices, activeIdx, temporal) {
       '<svg class="agenda-item-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' +
     '</div>';
   }).join('');
- 
+
   listEl.innerHTML = items +
     '<div class="agenda-add-btn" id="agenda-add-btn">' +
       '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>' +
       'Agregar dispositivo' +
     '</div>';
- 
+
   // Eventos items
   listEl.querySelectorAll('.agenda-item').forEach(function(el) {
     el.addEventListener('click', function() {
@@ -583,46 +626,46 @@ function renderAgenda(devices, activeIdx, temporal) {
       renderApp(devices, idx, temporal);
     });
   });
- 
+
   // Botón agregar — instrucción
   document.getElementById('agenda-add-btn').addEventListener('click', function() {
     cerrarDropdown();
     alert('Para agregar un dispositivo, abre el link personalizado que te enviamos por WhatsApp.');
   });
- 
+
   // Toggle dropdown
   document.getElementById('agenda-bar-header').onclick = function() {
     var open = listEl.classList.toggle('open');
     chevron.classList.toggle('open', open);
   };
 }
- 
+
 function cerrarDropdown() {
   document.getElementById('agenda-list').classList.remove('open');
   document.getElementById('agenda-chevron').classList.remove('open');
 }
- 
+
 // ─────────────────────────────────────────
 // COMANDOS — según tipo de dispositivo
 // ─────────────────────────────────────────
 function renderComandos(device) {
   var phone = device.telefono;
   var esSC20 = device.tipo === 'SC20';
- 
+
   var CMDS = [
     { label:'Ubicación',    sub:'Solicitar posición GPS',    cmd:'loc',     type:'loc',   icon:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>' },
     { label:'Encuéntrame',  sub:'Activar señal de búsqueda', cmd:'findme',  type:'find',  icon:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>' },
     { label:'Batería',      sub:'Consultar nivel de carga',  cmd:'battery', type:'bat',   icon:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 11h4"/>' },
     { label:'Alarma',       sub:'',                          cmd:'',        type:'alarm', icon:'' },
   ];
- 
+
   // Mensaje libre solo SC-20
   if (esSC20) {
     CMDS.push({ label:'Mensaje libre', sub:'', cmd:'', type:'msg', icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' });
   }
- 
+
   var list = document.getElementById('messages-list');
- 
+
   list.innerHTML = CMDS.map(function(m, i) {
     if (m.type === 'alarm') {
       return '<div class="msg-card alarm" id="card-'+i+'">' +
@@ -654,7 +697,7 @@ function renderComandos(device) {
         '</button>' +
       '</div>';
     }
- 
+
     if (m.type === 'msg') {
       return '<div class="msg-card msg" id="card-'+i+'">' +
         '<div class="msg-free-label">' +
@@ -672,7 +715,7 @@ function renderComandos(device) {
         '</div>' +
       '</div>';
     }
- 
+
     var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
     var enc  = encodeURIComponent(m.cmd);
     var href = isIos ? 'sms:'+phone+'&body='+enc : 'sms:'+phone+'?body='+enc;
@@ -684,7 +727,7 @@ function renderComandos(device) {
       '<div class="msg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+m.icon+'</svg></div>' +
     '</a>';
   }).join('');
- 
+
   // Flash en cards simples
   list.querySelectorAll('.msg-card:not(.msg):not(.alarm)').forEach(function(c) {
     c.addEventListener('click', function() {
@@ -693,7 +736,7 @@ function renderComandos(device) {
       c.classList.add('sent');
     });
   });
- 
+
   // Lógica mensaje libre
   CMDS.forEach(function(m, i) {
     if (m.type === 'msg') {
@@ -734,7 +777,7 @@ function renderComandos(device) {
     }
   });
 }
- 
+
 // ─────────────────────────────────────────
 // UTILIDADES ALARMA
 // ─────────────────────────────────────────
@@ -745,11 +788,11 @@ function padAlarm(el, max) {
   if (v < 0)   v = 0;
   el.value = v;
 }
- 
+
 function toggleDay(btn) {
   btn.classList.toggle('active');
 }
- 
+
 function getAlarmCmd(i) {
   var hh   = document.getElementById('alarm-hh-'+i);
   var mm   = document.getElementById('alarm-mm-'+i);
@@ -762,7 +805,7 @@ function getAlarmCmd(i) {
   if (!dayStr) dayStr = '0';
   return 'alarm1,' + hhv + mmv + ',' + dayStr + ',' + (on.checked ? '1' : '0');
 }
- 
+
 // ─────────────────────────────────────────
 // SERVICE WORKER
 // ─────────────────────────────────────────
