@@ -15,11 +15,10 @@
   <title>SimpleCare</title>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
+ 
     :root {
       --bg:        #f5f0eb;
       --surface:   #ffffff;
-      --surface2:  #f0ebe4;
       --border:    #ddd8d0;
       --border2:   #c8c2b8;
       --text:      #1a1714;
@@ -42,7 +41,7 @@
       --radius:    20px;
       --radius-sm: 14px;
     }
-
+ 
     body {
       font-family: 'DM Sans', sans-serif;
       background: var(--bg);
@@ -53,83 +52,194 @@
       max-width: 430px;
       margin: 0 auto;
     }
-
+ 
     /* ── Header ── */
     .header {
-      padding: 52px 22px 22px;
+      padding: 52px 22px 20px;
       background: var(--surface);
       border-bottom: 1.5px solid var(--border);
       display: flex;
       align-items: center;
       gap: 16px;
     }
-
-    .header-logo {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      overflow: hidden;
-      flex-shrink: 0;
+    .header-logo { width:52px; height:52px; border-radius:14px; overflow:hidden; flex-shrink:0; border:1.5px solid var(--border); }
+    .header-logo img { width:100%; height:100%; object-fit:contain; }
+    .brand { font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--accent); font-weight:600; margin-bottom:3px; }
+    .header-title { font-family:'Lora',serif; font-size:20px; font-weight:700; color:var(--text); letter-spacing:-0.3px; line-height:1.2; }
+    .header-sub { font-size:13px; color:var(--muted); margin-top:3px; }
+ 
+    /* ── Agenda selector ── */
+    .agenda-bar {
+      margin: 14px 20px 0;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
       border: 1.5px solid var(--border);
+      overflow: hidden;
     }
-
-    .header-logo img { width: 100%; height: 100%; object-fit: contain; }
-
-    .brand {
-      font-family: 'DM Sans', sans-serif;
+ 
+    .agenda-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+ 
+    .agenda-bar-left { display: flex; align-items: center; gap: 10px; }
+ 
+    .device-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .device-dot.sc10 { background: var(--blue); }
+    .device-dot.sc20 { background: var(--purple); }
+ 
+    .agenda-selected-name {
+      font-family: 'Lora', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+ 
+    .agenda-selected-tipo {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 6px;
+    }
+    .agenda-selected-tipo.sc10 { background: var(--blue-lt); color: var(--blue); border: 1px solid var(--blue-bd); }
+    .agenda-selected-tipo.sc20 { background: var(--purple-lt); color: var(--purple); border: 1px solid var(--purple-bd); }
+ 
+    .agenda-chevron {
+      color: var(--muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .agenda-chevron.open { transform: rotate(180deg); }
+ 
+    /* Lista desplegable */
+    .agenda-list {
+      display: none;
+      border-top: 1.5px solid var(--border);
+    }
+    .agenda-list.open { display: block; }
+ 
+    .agenda-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .agenda-item:last-child { border-bottom: none; }
+    .agenda-item:active { background: var(--bg); }
+    .agenda-item.active { background: var(--accent-lt); }
+ 
+    .agenda-item-info { flex: 1; }
+    .agenda-item-name { font-size: 16px; font-weight: 600; color: var(--text); }
+    .agenda-item-phone { font-size: 13px; color: var(--muted); margin-top: 1px; font-family: monospace; }
+ 
+    .agenda-item-check {
+      color: var(--accent);
+      opacity: 0;
+    }
+    .agenda-item.active .agenda-item-check { opacity: 1; }
+ 
+    .agenda-add-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
       color: var(--accent);
       font-weight: 600;
-      margin-bottom: 3px;
+      font-size: 15px;
+      border-top: 1.5px solid var(--border);
+      background: var(--accent-lt);
     }
-
-    .header-title {
+ 
+    /* ── Toast de nuevo dispositivo ── */
+    .toast-new {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--surface);
+      border-top: 1.5px solid var(--border);
+      padding: 22px 22px 36px;
+      transition: transform 0.35s ease;
+      z-index: 100;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
+    }
+    .toast-new.show { transform: translateX(-50%) translateY(0); }
+ 
+    .toast-new-title {
       font-family: 'Lora', serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--text);
-      letter-spacing: -0.3px;
-      line-height: 1.2;
+      margin-bottom: 6px;
     }
-
-    .header-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    /* ── Device bar ── */
-    .recipient-bar {
-      margin: 16px 20px 4px;
-      padding: 14px 18px;
-      background: var(--surface);
-      border-radius: var(--radius-sm);
+    .toast-new-sub { font-size: 15px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+ 
+    .toast-new-device {
+      background: var(--bg);
       border: 1.5px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 18px;
     }
-
-    .recipient-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--muted);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .recipient-number {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--accent);
-      font-variant-numeric: tabular-nums;
+    .toast-new-device-name { font-size: 18px; font-weight: 700; font-family: 'Lora', serif; color: var(--text); }
+    .toast-new-device-phone { font-size: 14px; color: var(--muted); margin-top: 2px; font-family: monospace; }
+ 
+    .toast-btns { display: flex; gap: 10px; }
+ 
+    .btn-primary {
       flex: 1;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
       font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.15s;
     }
-
+    .btn-primary:active { opacity: 0.8; }
+ 
+    .btn-secondary {
+      flex: 1;
+      background: var(--bg);
+      color: var(--text);
+      border: 1.5px solid var(--border2);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+    }
+ 
+    /* ── Overlay ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 99;
+    }
+    .overlay.show { display: block; }
+ 
     /* ── Section label ── */
     .section-label {
       font-size: 11px;
@@ -139,546 +249,526 @@
       font-weight: 600;
       padding: 18px 22px 10px;
     }
-
-    /* ── Cards list ── */
+ 
+    /* ── Cards ── */
     .messages-list {
       flex: 1;
-      padding: 0 20px;
+      padding: 0 20px 20px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding-bottom: 20px;
     }
-
-    /* ── Command card base ── */
+ 
     .msg-card {
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: var(--radius);
       padding: 20px 80px 20px 22px;
       cursor: pointer;
-      transition: transform 0.12s, box-shadow 0.12s;
+      transition: transform 0.12s;
       user-select: none;
       text-decoration: none;
       display: block;
       position: relative;
     }
-
-    .msg-card:active { transform: scale(0.975); box-shadow: none; }
-
-    .msg-label {
-      font-family: 'Lora', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.2;
-    }
-
-    .msg-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    /* ── Icon circle ── */
+    .msg-card:active { transform: scale(0.975); }
+ 
+    .msg-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); line-height:1.2; }
+    .msg-sub   { font-size:13px; color:var(--muted); margin-top:3px; }
+ 
     .msg-icon {
       position: absolute;
-      right: 18px;
-      top: 50%;
+      right: 18px; top: 50%;
       transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
     }
-
-    .msg-icon svg { width: 22px; height: 22px; }
-
-    /* Color variants */
-    .msg-card.loc   { border-color: var(--blue-bd); }
-    .msg-card.loc   .msg-icon { background: var(--blue-lt); color: var(--blue); border: 1.5px solid var(--blue-bd); }
-
-    .msg-card.bat   { border-color: var(--amber-bd); }
-    .msg-card.bat   .msg-icon { background: var(--amber-lt); color: var(--amber); border: 1.5px solid var(--amber-bd); }
-
-    .msg-card.find  { border-color: var(--rose-bd); }
-    .msg-card.find  .msg-icon { background: var(--rose-lt); color: var(--rose); border: 1.5px solid var(--rose-bd); }
-
-    .msg-card.msg   { border-color: var(--purple-bd); cursor: default; padding: 20px 22px 18px; }
-    .msg-card.msg:active { transform: none; }
-    .msg-card.alarm { border-color: var(--accent-bd); cursor: default; padding: 20px 22px 18px; }
-    .msg-card.alarm:active { transform: none; }
-
-    /* Sent flash */
+    .msg-icon svg { width:22px; height:22px; }
+ 
+    .msg-card.loc  { border-color:var(--blue-bd); }
+    .msg-card.loc  .msg-icon { background:var(--blue-lt); color:var(--blue); border:1.5px solid var(--blue-bd); }
+    .msg-card.bat  { border-color:var(--amber-bd); }
+    .msg-card.bat  .msg-icon { background:var(--amber-lt); color:var(--amber); border:1.5px solid var(--amber-bd); }
+    .msg-card.find { border-color:var(--rose-bd); }
+    .msg-card.find .msg-icon { background:var(--rose-lt); color:var(--rose); border:1.5px solid var(--rose-bd); }
+ 
+    .msg-card.msg   { border-color:var(--purple-bd); cursor:default; padding:20px 22px 18px; }
+    .msg-card.msg:active { transform:none; }
+    .msg-card.alarm { border-color:var(--accent-bd); cursor:default; padding:20px 22px 18px; }
+    .msg-card.alarm:active { transform:none; }
+ 
     @keyframes flashCard {
-      0%   { background: var(--surface); }
-      40%  { background: var(--accent-lt); border-color: var(--accent-bd); }
-      100% { background: var(--surface); }
+      0%  { background:var(--surface); }
+      40% { background:var(--accent-lt); border-color:var(--accent-bd); }
+      100%{ background:var(--surface); }
     }
-    .msg-card.sent { animation: flashCard 0.65s ease; }
-
+    .msg-card.sent { animation:flashCard 0.65s ease; }
+ 
     /* ── Msg libre ── */
-    .msg-free-label {
-      font-family: 'Lora', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .msg-free-label svg { width: 22px; height: 22px; color: var(--purple); flex-shrink: 0; }
-
-    .badge-sc20 {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-weight: 600;
-      color: var(--purple);
-      background: var(--purple-lt);
-      border: 1px solid var(--purple-bd);
-      border-radius: 6px;
-      padding: 3px 10px;
-      display: inline-block;
-      margin-bottom: 12px;
-    }
-
-    .msg-textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 17px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      resize: none;
-      outline: none;
-      line-height: 1.5;
-    }
-
-    .msg-textarea:focus { border-color: var(--purple-bd); background: #fff; }
-    .msg-textarea::placeholder { color: var(--muted); }
-
-    .msg-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-
-    .msg-counter { font-size: 13px; color: var(--muted); }
-    .msg-counter.warn { color: var(--amber); }
-    .msg-counter.over { color: var(--rose); }
-
-    .msg-send-btn {
-      background: var(--purple);
-      border: none;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      transition: opacity 0.15s;
-    }
-
-    .msg-send-btn svg { width: 14px; height: 14px; }
-    .msg-send-btn:active { opacity: 0.8; }
-
+    .msg-free-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:10px; }
+    .msg-free-label svg { width:22px; height:22px; color:var(--purple); flex-shrink:0; }
+    .badge-sc20 { font-size:10px; text-transform:uppercase; letter-spacing:0.8px; font-weight:600; color:var(--purple); background:var(--purple-lt); border:1px solid var(--purple-bd); border-radius:6px; padding:3px 10px; display:inline-block; margin-bottom:12px; }
+    .msg-textarea { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; font-size:17px; color:var(--text); font-family:'DM Sans',sans-serif; resize:none; outline:none; line-height:1.5; }
+    .msg-textarea:focus { border-color:var(--purple-bd); background:#fff; }
+    .msg-textarea::placeholder { color:var(--muted); }
+    .msg-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+    .msg-counter { font-size:13px; color:var(--muted); }
+    .msg-counter.warn { color:var(--amber); }
+    .msg-counter.over { color:var(--rose); }
+    .msg-send-btn { background:var(--purple); border:none; color:#fff; font-size:15px; font-weight:600; border-radius:10px; padding:10px 20px; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:7px; }
+    .msg-send-btn svg { width:14px; height:14px; }
+    .msg-send-btn:active { opacity:0.8; }
+ 
     /* ── Alarm ── */
-    .alarm-label {
-      font-family: 'Lora', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .alarm-label svg { width: 22px; height: 22px; color: var(--accent); flex-shrink: 0; }
-
-    .alarm-row-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .alarm-row { margin-bottom: 16px; }
-
-    .alarm-time { display: flex; align-items: center; gap: 8px; }
-
-    .alarm-time-input {
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 8px;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
-      font-family: 'Lora', serif;
-      width: 72px;
-      text-align: center;
-      outline: none;
-    }
-
-    .alarm-time-input:focus { border-color: var(--accent-bd); background: #fff; }
-    .alarm-time-sep { font-size: 28px; font-weight: 700; color: var(--muted); font-family: 'Lora', serif; }
-
-    .alarm-days { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .alarm-day {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'DM Sans', sans-serif;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-
-    .alarm-day.active {
-      background: var(--accent-lt);
-      border-color: var(--accent-bd);
-      color: var(--accent);
-    }
-
-    .alarm-toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding: 12px 14px;
-      background: var(--bg);
-      border-radius: 12px;
-      border: 1.5px solid var(--border);
-    }
-
-    .alarm-toggle-label { font-size: 16px; color: var(--text); font-weight: 500; }
-
-    .alarm-toggle { position: relative; width: 48px; height: 28px; cursor: pointer; }
-    .alarm-toggle input { opacity: 0; width: 0; height: 0; }
-
-    .alarm-toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: var(--border2);
-      border-radius: 14px;
-      transition: background 0.2s;
-    }
-
-    .alarm-toggle-slider:before {
-      content: '';
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      left: 3px;
-      top: 3px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform 0.2s;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-    }
-
-    .alarm-toggle input:checked + .alarm-toggle-slider { background: var(--accent); }
-    .alarm-toggle input:checked + .alarm-toggle-slider:before { transform: translateX(20px); }
-
-    .alarm-send-btn {
-      width: 100%;
-      background: var(--accent);
-      border: none;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 600;
-      border-radius: 14px;
-      padding: 14px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: opacity 0.15s;
-    }
-
-    .alarm-send-btn:active { opacity: 0.8; }
-    .alarm-send-btn svg { width: 16px; height: 16px; }
-
+    .alarm-label { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+    .alarm-label svg { width:22px; height:22px; color:var(--accent); flex-shrink:0; }
+    .alarm-row { margin-bottom:16px; }
+    .alarm-row-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:600; margin-bottom:8px; }
+    .alarm-time { display:flex; align-items:center; gap:8px; }
+    .alarm-time-input { background:var(--bg); border:1.5px solid var(--border); border-radius:12px; padding:10px 8px; font-size:28px; font-weight:700; color:var(--text); font-family:'Lora',serif; width:72px; text-align:center; outline:none; }
+    .alarm-time-input:focus { border-color:var(--accent-bd); background:#fff; }
+    .alarm-time-sep { font-size:28px; font-weight:700; color:var(--muted); font-family:'Lora',serif; }
+    .alarm-days { display:flex; gap:8px; flex-wrap:wrap; }
+    .alarm-day { width:40px; height:40px; border-radius:50%; background:var(--bg); border:1.5px solid var(--border); color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:'DM Sans',sans-serif; transition:background 0.15s,color 0.15s,border-color 0.15s; }
+    .alarm-day.active { background:var(--accent-lt); border-color:var(--accent-bd); color:var(--accent); }
+    .alarm-toggle-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:12px 14px; background:var(--bg); border-radius:12px; border:1.5px solid var(--border); }
+    .alarm-toggle-label { font-size:16px; color:var(--text); font-weight:500; }
+    .alarm-toggle { position:relative; width:48px; height:28px; cursor:pointer; }
+    .alarm-toggle input { opacity:0; width:0; height:0; }
+    .alarm-toggle-slider { position:absolute; inset:0; background:var(--border2); border-radius:14px; transition:background 0.2s; }
+    .alarm-toggle-slider:before { content:''; position:absolute; width:22px; height:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform 0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+    .alarm-toggle input:checked + .alarm-toggle-slider { background:var(--accent); }
+    .alarm-toggle input:checked + .alarm-toggle-slider:before { transform:translateX(20px); }
+    .alarm-send-btn { width:100%; background:var(--accent); border:none; color:#fff; font-size:17px; font-weight:600; border-radius:14px; padding:14px; cursor:pointer; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .alarm-send-btn:active { opacity:0.8; }
+    .alarm-send-btn svg { width:16px; height:16px; }
+ 
     /* ── Footer ── */
-    .footer {
-      padding: 20px 22px 32px;
-      border-top: 1.5px solid var(--border);
-      margin-top: 4px;
-      background: var(--surface);
-    }
-
-    .footer-note {
-      font-size: 14px;
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.7;
-    }
-
-    .footer-note span { color: var(--accent); font-weight: 600; }
-
+    .footer { padding:20px 22px 32px; border-top:1.5px solid var(--border); margin-top:4px; background:var(--surface); }
+    .footer-note { font-size:14px; color:var(--muted); text-align:center; line-height:1.7; }
+    .footer-note span { color:var(--accent); font-weight:600; }
+ 
     /* ── Error ── */
-    .error-box {
-      margin: 4px 0;
-      padding: 22px;
-      background: var(--rose-lt);
-      border: 1.5px solid var(--rose-bd);
-      border-radius: var(--radius);
-      text-align: center;
-    }
-
-    .error-box p { font-size: 16px; color: var(--rose); line-height: 1.7; }
-    .error-box code {
-      font-family: monospace;
-      font-size: 13px;
-      background: rgba(0,0,0,0.06);
-      padding: 3px 10px;
-      border-radius: 6px;
-      display: inline-block;
-      margin-top: 10px;
-      color: var(--text);
-    }
-
-    /* Nombre del paciente */
-    #display-nombre {
-      font-family: 'Lora', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
+    .error-box { margin:4px 0; padding:22px; background:var(--rose-lt); border:1.5px solid var(--rose-bd); border-radius:var(--radius); text-align:center; }
+    .error-box p { font-size:16px; color:var(--rose); line-height:1.7; }
+    .error-box code { font-family:monospace; font-size:13px; background:rgba(0,0,0,0.06); padding:3px 10px; border-radius:6px; display:inline-block; margin-top:10px; color:var(--text); }
+ 
+    /* ── Sin dispositivos ── */
+    .empty-state { padding:40px 22px; text-align:center; }
+    .empty-state-icon { font-size:48px; margin-bottom:16px; }
+    .empty-state-title { font-family:'Lora',serif; font-size:22px; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .empty-state-sub { font-size:15px; color:var(--muted); line-height:1.6; }
   </style>
 </head>
 <body>
-
+ 
+<!-- Header -->
 <div class="header">
   <div class="header-logo"><img src="icon.png" alt="SimpleCare"></div>
   <div>
     <div class="brand">SimpleCare</div>
     <div class="header-title">Plataforma SC-10 y SC-20</div>
-    <div class="header-sub" id="header-sub">Listo para enviar comandos</div>
+    <div class="header-sub" id="header-sub">Selecciona un dispositivo</div>
   </div>
 </div>
-
-<div class="recipient-bar">
-  <span class="recipient-label">Dispositivo</span>
-  <div style="flex:1;min-width:0;">
-    <div id="display-nombre" style="display:none;"></div>
-    <span class="recipient-number" id="display-number">cargando...</span>
+ 
+<!-- Selector de dispositivo -->
+<div class="agenda-bar" id="agenda-bar" style="display:none;">
+  <div class="agenda-bar-header" id="agenda-bar-header">
+    <div class="agenda-bar-left">
+      <div class="device-dot" id="agenda-dot"></div>
+      <div>
+        <span class="agenda-selected-name" id="agenda-selected-name">—</span>
+        <span class="agenda-selected-tipo" id="agenda-selected-tipo"></span>
+      </div>
+    </div>
+    <svg class="agenda-chevron" id="agenda-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
   </div>
+  <div class="agenda-list" id="agenda-list"></div>
 </div>
-
-<div class="section-label">Selecciona un comando</div>
-
+ 
+<!-- Comandos -->
+<div class="section-label" id="section-label" style="display:none;">Selecciona un comando</div>
 <div class="messages-list" id="messages-list"></div>
-
-<div class="footer">
+ 
+<!-- Footer -->
+<div class="footer" id="footer" style="display:none;">
   <div class="footer-note">
     Toca un comando para abrir tu app de SMS con el texto listo.<br>
     Solo presiona <span>Enviar</span>
   </div>
 </div>
-
+ 
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+ 
+<!-- Toast: nuevo dispositivo detectado -->
+<div class="toast-new" id="toast-new">
+  <div class="toast-new-title">Nuevo dispositivo</div>
+  <div class="toast-new-sub">¿Quieres agregar este dispositivo a tu agenda para acceder fácilmente?</div>
+  <div class="toast-new-device">
+    <div class="toast-new-device-name" id="toast-nombre">—</div>
+    <div class="toast-new-device-phone" id="toast-phone">—</div>
+  </div>
+  <div class="toast-btns">
+    <button class="btn-primary" id="toast-agregar">Agregar a agenda</button>
+    <button class="btn-secondary" id="toast-saltar">Usar sin guardar</button>
+  </div>
+</div>
+ 
 <script>
-  const MESSAGES = [
-    { label:'Ubicación',      sub:'Solicitar posición GPS',    cmd:'loc',      type:'loc',   icon:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>' },
-    { label:'Encuéntrame',    sub:'Activar señal de búsqueda', cmd:'findme',   type:'find',  icon:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>' },
-    { label:'Batería',        sub:'Consultar nivel de carga',  cmd:'battery',  type:'bat',   icon:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 11h4"/>' },
-    { label:'Alarma',         sub:'',                          cmd:'',         type:'alarm', icon:'' },
-    { label:'Mensaje libre',  sub:'',                          cmd:'',         type:'msg',   icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
-  ];
-
-  var phone = null;
-  var params;
-  try {
-    params = new URLSearchParams(window.location.search);
-    var phoneFromUrl = params.get('to');
-    if (phoneFromUrl && phoneFromUrl.length > 4) {
-      phone = phoneFromUrl;
-      localStorage.setItem('sc_device', phone);
+// ─────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────
+function getDevices() {
+  try { return JSON.parse(localStorage.getItem('sc_agenda') || '[]'); } catch(e) { return []; }
+}
+function saveDevices(arr) {
+  try { localStorage.setItem('sc_agenda', JSON.stringify(arr)); } catch(e) {}
+}
+function getActiveIdx() {
+  try { return parseInt(localStorage.getItem('sc_active') || '0'); } catch(e) { return 0; }
+}
+function saveActiveIdx(i) {
+  try { localStorage.setItem('sc_active', String(i)); } catch(e) {}
+}
+ 
+// ─────────────────────────────────────────
+// ESTADO GLOBAL
+// ─────────────────────────────────────────
+var currentDevice = null; // { nombre, telefono, tipo } — SC10 o SC20
+ 
+// ─────────────────────────────────────────
+// PARSEAR URL
+// ─────────────────────────────────────────
+var params = {};
+try {
+  var up = new URLSearchParams(window.location.search);
+  params.to     = up.get('to')     || '';
+  params.nombre = up.get('nombre') || '';
+  params.tipo   = (up.get('tipo')  || 'SC10').toUpperCase();
+} catch(e) {}
+ 
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  var devices = getDevices();
+ 
+  if (params.to && params.to.length > 4) {
+    // Hay un dispositivo en la URL
+    var nuevo = { nombre: params.nombre || params.to, telefono: params.to, tipo: params.tipo };
+    // ¿Ya existe?
+    var existe = devices.findIndex(function(d) { return d.telefono === nuevo.telefono; });
+    if (existe >= 0) {
+      // Ya guardado — activarlo directamente
+      saveActiveIdx(existe);
+      renderApp(devices, existe);
     } else {
-      var saved = localStorage.getItem('sc_device');
-      if (saved && saved.length > 4) phone = saved;
+      // Nuevo — preguntar si agregar
+      mostrarToastNuevo(nuevo, devices);
     }
-  } catch(e) {}
-
-  var list = document.getElementById('messages-list');
-
-  if (!phone) {
-    document.getElementById('display-number').textContent = 'Sin número';
-    document.getElementById('header-sub').textContent = 'Número no configurado';
-    list.innerHTML = '<div class="error-box"><p>Abre el link personalizado que te enviamos para configurar tu dispositivo.<br><br><code>sms.simplecare.cl/?to=TUNUMERO</code></p></div>';
+  } else if (devices.length > 0) {
+    // Sin URL, usar agenda guardada
+    var idx = Math.min(getActiveIdx(), devices.length - 1);
+    renderApp(devices, idx);
   } else {
-    document.getElementById('display-number').textContent = phone.startsWith('+') ? phone : '+'+phone;
-    var nombre = params ? params.get('nombre') : null;
-    if (!nombre) { try { nombre = localStorage.getItem('sc_nombre'); } catch(e) {} }
-    if (nombre) {
-      try { localStorage.setItem('sc_nombre', nombre); } catch(e) {}
-      document.getElementById('display-nombre').textContent = nombre;
-      document.getElementById('display-nombre').style.display = 'block';
-    }
-
-    list.innerHTML = MESSAGES.map(function(m, i) {
-
-      if (m.type === 'alarm') {
-        return '<div class="msg-card alarm" id="card-'+i+'">' +
-          '<div class="alarm-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6M22 6l-3-3"/></svg>Configurar alarma</div>' +
-          '<div class="alarm-row"><div class="alarm-row-label">Hora</div>' +
-            '<div class="alarm-time">' +
-              '<input class="alarm-time-input" type="number" id="alarm-hh-'+i+'" min="0" max="23" value="07" oninput="padAlarm(this,23)">' +
-              '<span class="alarm-time-sep">:</span>' +
-              '<input class="alarm-time-input" type="number" id="alarm-mm-'+i+'" min="0" max="59" value="00" oninput="padAlarm(this,59)">' +
-            '</div>' +
-          '</div>' +
-          '<div class="alarm-row"><div class="alarm-row-label">Días de repetición</div>' +
-            '<div class="alarm-days">' +
-              ['L','M','X','J','V','S','D'].map(function(d,j){
-                return '<button class="alarm-day'+(j<5?' active':'')+'" data-day="'+(j+1)+'" onclick="toggleDay(this,'+i+')">'+d+'</button>';
-              }).join('') +
-            '</div>' +
-          '</div>' +
-          '<div class="alarm-toggle-row">' +
-            '<span class="alarm-toggle-label">Alarma activa</span>' +
-            '<label class="alarm-toggle"><input type="checkbox" id="alarm-on-'+i+'" checked><span class="alarm-toggle-slider"></span></label>' +
-          '</div>' +
-          '<button class="alarm-send-btn" id="alarm-btn-'+i+'">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
-            'Enviar comando' +
-          '</button>' +
-        '</div>';
-      }
-
-      if (m.type === 'msg') {
-        return '<div class="msg-card msg" id="card-'+i+'">' +
-          '<div class="msg-free-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' + m.label + '</div>' +
-          '<div class="badge-sc20">Solo SC-20 · Smartwatch</div>' +
-          '<textarea class="msg-textarea" id="msg-input-'+i+'" rows="3" maxlength="94" placeholder="Escribe tu mensaje aquí..."></textarea>' +
-          '<div class="msg-footer">' +
-            '<span class="msg-counter" id="msg-counter-'+i+'">0 / 94</span>' +
-            '<button class="msg-send-btn" id="msg-btn-'+i+'">' +
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
-              'Enviar' +
-            '</button>' +
-          '</div>' +
-        '</div>';
-      }
-
-      var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      var enc = encodeURIComponent(m.cmd);
-      var href = isIos ? 'sms:'+phone+'&body='+enc : 'sms:'+phone+'?body='+enc;
-      return '<a class="msg-card '+m.type+'" href="'+href+'" id="card-'+i+'">' +
-        '<div>' +
-          '<div class="msg-label">'+m.label+'</div>' +
-          (m.sub ? '<div class="msg-sub">'+m.sub+'</div>' : '') +
-        '</div>' +
-        '<div class="msg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+m.icon+'</svg></div>' +
-      '</a>';
-    }).join('');
-
-    // Flash en cards simples
-    list.querySelectorAll('.msg-card:not(.msg):not(.alarm)').forEach(function(c) {
-      c.addEventListener('click', function() {
-        c.classList.remove('sent');
-        void c.offsetWidth;
-        c.classList.add('sent');
-      });
+    // Sin nada
+    renderVacio();
+  }
+});
+ 
+// ─────────────────────────────────────────
+// TOAST NUEVO DISPOSITIVO
+// ─────────────────────────────────────────
+function mostrarToastNuevo(nuevo, devices) {
+  document.getElementById('toast-nombre').textContent = nuevo.nombre;
+  document.getElementById('toast-phone').textContent  = nuevo.telefono.startsWith('+') ? nuevo.telefono : '+'+nuevo.telefono;
+  document.getElementById('toast-new').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+ 
+  document.getElementById('toast-agregar').onclick = function() {
+    devices.push(nuevo);
+    saveDevices(devices);
+    var idx = devices.length - 1;
+    saveActiveIdx(idx);
+    cerrarToast();
+    renderApp(devices, idx);
+  };
+ 
+  document.getElementById('toast-saltar').onclick = function() {
+    cerrarToast();
+    // Usar sin guardar: agrega temporalmente
+    var temp = devices.concat([nuevo]);
+    renderApp(temp, temp.length - 1, true); // true = no persistir
+  };
+}
+ 
+function cerrarToast() {
+  document.getElementById('toast-new').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+ 
+// ─────────────────────────────────────────
+// RENDER ESTADO VACÍO
+// ─────────────────────────────────────────
+function renderVacio() {
+  document.getElementById('messages-list').innerHTML =
+    '<div class="empty-state">' +
+      '<div class="empty-state-icon">📱</div>' +
+      '<div class="empty-state-title">Sin dispositivos</div>' +
+      '<div class="empty-state-sub">Abre el link personalizado que te enviamos por WhatsApp para agregar tu primer dispositivo.</div>' +
+    '</div>';
+}
+ 
+// ─────────────────────────────────────────
+// RENDER PRINCIPAL
+// ─────────────────────────────────────────
+function renderApp(devices, activeIdx, temporal) {
+  currentDevice = devices[activeIdx];
+  document.getElementById('header-sub').textContent = 'Listo para enviar comandos';
+ 
+  // Mostrar/ocultar elementos
+  document.getElementById('section-label').style.display = '';
+  document.getElementById('footer').style.display = '';
+ 
+  renderAgenda(devices, activeIdx, temporal);
+  renderComandos(currentDevice);
+}
+ 
+// ─────────────────────────────────────────
+// AGENDA SELECTOR
+// ─────────────────────────────────────────
+function renderAgenda(devices, activeIdx, temporal) {
+  var bar     = document.getElementById('agenda-bar');
+  var dot     = document.getElementById('agenda-dot');
+  var nameEl  = document.getElementById('agenda-selected-name');
+  var tipoEl  = document.getElementById('agenda-selected-tipo');
+  var listEl  = document.getElementById('agenda-list');
+  var chevron = document.getElementById('agenda-chevron');
+ 
+  bar.style.display = '';
+ 
+  var d = devices[activeIdx];
+  nameEl.textContent  = d.nombre;
+  tipoEl.textContent  = d.tipo;
+  tipoEl.className    = 'agenda-selected-tipo ' + d.tipo.toLowerCase();
+  dot.className       = 'device-dot ' + d.tipo.toLowerCase();
+ 
+  // Lista desplegable
+  var items = devices.map(function(dev, i) {
+    return '<div class="agenda-item' + (i === activeIdx ? ' active' : '') + '" data-idx="'+i+'">' +
+      '<div class="device-dot ' + dev.tipo.toLowerCase() + '"></div>' +
+      '<div class="agenda-item-info">' +
+        '<div class="agenda-item-name">' + dev.nombre + '</div>' +
+        '<div class="agenda-item-phone">' + (dev.telefono.startsWith('+') ? dev.telefono : '+'+dev.telefono) + ' · ' + dev.tipo + '</div>' +
+      '</div>' +
+      '<svg class="agenda-item-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' +
+    '</div>';
+  }).join('');
+ 
+  listEl.innerHTML = items +
+    '<div class="agenda-add-btn" id="agenda-add-btn">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>' +
+      'Agregar dispositivo' +
+    '</div>';
+ 
+  // Eventos items
+  listEl.querySelectorAll('.agenda-item').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var idx = parseInt(el.getAttribute('data-idx'));
+      if (!temporal) saveActiveIdx(idx);
+      cerrarDropdown();
+      renderApp(devices, idx, temporal);
     });
-
-    // Lógica mensaje libre
-    MESSAGES.forEach(function(m, i) {
-      if (m.type === 'msg') {
-        var ta  = document.getElementById('msg-input-'+i);
-        var ct  = document.getElementById('msg-counter-'+i);
-        var btn = document.getElementById('msg-btn-'+i);
-        if (ta && ct) {
-          ta.addEventListener('input', function() {
-            var len = ta.value.length;
-            ct.textContent = len + ' / 94';
-            ct.className = 'msg-counter' + (len >= 94 ? ' over' : len >= 80 ? ' warn' : '');
-          });
-        }
+  });
+ 
+  // Botón agregar — instrucción
+  document.getElementById('agenda-add-btn').addEventListener('click', function() {
+    cerrarDropdown();
+    alert('Para agregar un dispositivo, abre el link personalizado que te enviamos por WhatsApp.');
+  });
+ 
+  // Toggle dropdown
+  document.getElementById('agenda-bar-header').onclick = function() {
+    var open = listEl.classList.toggle('open');
+    chevron.classList.toggle('open', open);
+  };
+}
+ 
+function cerrarDropdown() {
+  document.getElementById('agenda-list').classList.remove('open');
+  document.getElementById('agenda-chevron').classList.remove('open');
+}
+ 
+// ─────────────────────────────────────────
+// COMANDOS — según tipo de dispositivo
+// ─────────────────────────────────────────
+function renderComandos(device) {
+  var phone = device.telefono;
+  var esSC20 = device.tipo === 'SC20';
+ 
+  var CMDS = [
+    { label:'Ubicación',    sub:'Solicitar posición GPS',    cmd:'loc',     type:'loc',   icon:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>' },
+    { label:'Encuéntrame',  sub:'Activar señal de búsqueda', cmd:'findme',  type:'find',  icon:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>' },
+    { label:'Batería',      sub:'Consultar nivel de carga',  cmd:'battery', type:'bat',   icon:'<rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 11h4"/>' },
+    { label:'Alarma',       sub:'',                          cmd:'',        type:'alarm', icon:'' },
+  ];
+ 
+  // Mensaje libre solo SC-20
+  if (esSC20) {
+    CMDS.push({ label:'Mensaje libre', sub:'', cmd:'', type:'msg', icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' });
+  }
+ 
+  var list = document.getElementById('messages-list');
+ 
+  list.innerHTML = CMDS.map(function(m, i) {
+    if (m.type === 'alarm') {
+      return '<div class="msg-card alarm" id="card-'+i+'">' +
+        '<div class="alarm-label">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6M22 6l-3-3"/></svg>' +
+          'Configurar alarma' +
+        '</div>' +
+        '<div class="alarm-row"><div class="alarm-row-label">Hora</div>' +
+          '<div class="alarm-time">' +
+            '<input class="alarm-time-input" type="number" id="alarm-hh-'+i+'" min="0" max="23" value="07" oninput="padAlarm(this,23)">' +
+            '<span class="alarm-time-sep">:</span>' +
+            '<input class="alarm-time-input" type="number" id="alarm-mm-'+i+'" min="0" max="59" value="00" oninput="padAlarm(this,59)">' +
+          '</div>' +
+        '</div>' +
+        '<div class="alarm-row"><div class="alarm-row-label">Días de repetición</div>' +
+          '<div class="alarm-days">' +
+            ['L','M','X','J','V','S','D'].map(function(d,j){
+              return '<button class="alarm-day'+(j<5?' active':'')+'" data-day="'+(j+1)+'" onclick="toggleDay(this)">'+d+'</button>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div class="alarm-toggle-row">' +
+          '<span class="alarm-toggle-label">Alarma activa</span>' +
+          '<label class="alarm-toggle"><input type="checkbox" id="alarm-on-'+i+'" checked><span class="alarm-toggle-slider"></span></label>' +
+        '</div>' +
+        '<button class="alarm-send-btn" id="alarm-btn-'+i+'">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
+          'Enviar comando' +
+        '</button>' +
+      '</div>';
+    }
+ 
+    if (m.type === 'msg') {
+      return '<div class="msg-card msg" id="card-'+i+'">' +
+        '<div class="msg-free-label">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+          'Mensaje libre' +
+        '</div>' +
+        '<div class="badge-sc20">Solo SC-20 · Smartwatch</div>' +
+        '<textarea class="msg-textarea" id="msg-input-'+i+'" rows="3" maxlength="94" placeholder="Escribe tu mensaje aquí..."></textarea>' +
+        '<div class="msg-footer">' +
+          '<span class="msg-counter" id="msg-counter-'+i+'">0 / 94</span>' +
+          '<button class="msg-send-btn" id="msg-btn-'+i+'">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>' +
+            'Enviar' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+ 
+    var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    var enc  = encodeURIComponent(m.cmd);
+    var href = isIos ? 'sms:'+phone+'&body='+enc : 'sms:'+phone+'?body='+enc;
+    return '<a class="msg-card '+m.type+'" href="'+href+'" id="card-'+i+'">' +
+      '<div>' +
+        '<div class="msg-label">'+m.label+'</div>' +
+        '<div class="msg-sub">'+m.sub+'</div>' +
+      '</div>' +
+      '<div class="msg-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+m.icon+'</svg></div>' +
+    '</a>';
+  }).join('');
+ 
+  // Flash en cards simples
+  list.querySelectorAll('.msg-card:not(.msg):not(.alarm)').forEach(function(c) {
+    c.addEventListener('click', function() {
+      c.classList.remove('sent');
+      void c.offsetWidth;
+      c.classList.add('sent');
+    });
+  });
+ 
+  // Lógica mensaje libre
+  CMDS.forEach(function(m, i) {
+    if (m.type === 'msg') {
+      var ta  = document.getElementById('msg-input-'+i);
+      var ct  = document.getElementById('msg-counter-'+i);
+      var btn = document.getElementById('msg-btn-'+i);
+      if (ta && ct) {
+        ta.addEventListener('input', function() {
+          var len = ta.value.length;
+          ct.textContent = len + ' / 94';
+          ct.className = 'msg-counter' + (len>=94?' over':len>=80?' warn':'');
+        });
+      }
+      if (btn) {
+        btn.addEventListener('click', function() {
+          var txt = ta ? ta.value.trim() : '';
+          if (!txt) { if (ta) ta.focus(); return; }
+          var cmd  = 'display1,' + txt;
+          var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+          var href = isIos ? 'sms:'+phone+'&body='+encodeURIComponent(cmd) : 'sms:'+phone+'?body='+encodeURIComponent(cmd);
+          window.location.href = href;
+        });
+      }
+    }
+    if (m.type === 'alarm') {
+      setTimeout(function() {
+        var btn = document.getElementById('alarm-btn-'+i);
         if (btn) {
           btn.addEventListener('click', function() {
-            var txt = ta ? ta.value.trim() : '';
-            if (!txt) { if (ta) ta.focus(); return; }
-            var cmd = 'display1,' + txt;
+            var cmd  = getAlarmCmd(i);
+            if (!cmd) return;
             var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
             var href = isIos ? 'sms:'+phone+'&body='+encodeURIComponent(cmd) : 'sms:'+phone+'?body='+encodeURIComponent(cmd);
             window.location.href = href;
           });
         }
-      }
-      // Lógica alarma
-      if (m.type === 'alarm') {
-        setTimeout(function() {
-          var btn = document.getElementById('alarm-btn-'+i);
-          if (btn) {
-            btn.addEventListener('click', function() {
-              var cmd = getAlarmCmd(i);
-              if (!cmd) return;
-              var isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-              var href = isIos ? 'sms:'+phone+'&body='+encodeURIComponent(cmd) : 'sms:'+phone+'?body='+encodeURIComponent(cmd);
-              window.location.href = href;
-            });
-          }
-        }, 100);
-      }
-    });
-  }
-
-  function padAlarm(el, max) {
-    var v = parseInt(el.value);
-    if (isNaN(v)) v = 0;
-    if (v > max) v = max;
-    if (v < 0)   v = 0;
-    el.value = v;
-  }
-
-  function toggleDay(btn, idx) {
-    btn.classList.toggle('active');
-  }
-
-  function getAlarmCmd(i) {
-    var hh  = document.getElementById('alarm-hh-'+i);
-    var mm  = document.getElementById('alarm-mm-'+i);
-    var on  = document.getElementById('alarm-on-'+i);
-    var days = document.querySelectorAll('#card-'+i+' .alarm-day.active');
-    if (!hh || !mm || !on) return '';
-    var hhv    = String(parseInt(hh.value)||0).padStart(2,'0');
-    var mmv    = String(parseInt(mm.value)||0).padStart(2,'0');
-    var dayStr = Array.from(days).map(function(d){ return d.getAttribute('data-day'); }).sort().join('');
-    if (!dayStr) dayStr = '0';
-    var estado = on.checked ? '1' : '0';
-    return 'alarm1,'+hhv+mmv+','+dayStr+','+estado;
-  }
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(function(){});
-  }
+      }, 50);
+    }
+  });
+}
+ 
+// ─────────────────────────────────────────
+// UTILIDADES ALARMA
+// ─────────────────────────────────────────
+function padAlarm(el, max) {
+  var v = parseInt(el.value);
+  if (isNaN(v)) v = 0;
+  if (v > max) v = max;
+  if (v < 0)   v = 0;
+  el.value = v;
+}
+ 
+function toggleDay(btn) {
+  btn.classList.toggle('active');
+}
+ 
+function getAlarmCmd(i) {
+  var hh   = document.getElementById('alarm-hh-'+i);
+  var mm   = document.getElementById('alarm-mm-'+i);
+  var on   = document.getElementById('alarm-on-'+i);
+  var days = document.querySelectorAll('#card-'+i+' .alarm-day.active');
+  if (!hh || !mm || !on) return '';
+  var hhv    = String(parseInt(hh.value)||0).padStart(2,'0');
+  var mmv    = String(parseInt(mm.value)||0).padStart(2,'0');
+  var dayStr = Array.from(days).map(function(d){ return d.getAttribute('data-day'); }).sort().join('');
+  if (!dayStr) dayStr = '0';
+  return 'alarm1,' + hhv + mmv + ',' + dayStr + ',' + (on.checked ? '1' : '0');
+}
+ 
+// ─────────────────────────────────────────
+// SERVICE WORKER
+// ─────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
 </script>
 </body>
 </html>
