@@ -369,6 +369,19 @@
   </div>
 </div>
 
+<!-- Update Banner -->
+<div id="update-banner" class="hidden fixed top-0 left-0 right-0 max-w-lg mx-auto z-50 px-4 pt-3">
+  <div class="bg-slate-900 text-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-3">
+    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    </div>
+    <p class="text-sm flex-1 leading-snug">Hay una nueva versión disponible.</p>
+    <button id="update-btn" class="bg-primary text-white text-xs font-bold px-3 py-2 rounded-lg flex-shrink-0 active:scale-95 transition-transform">
+      Actualizar
+    </button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-sm px-4 py-2 rounded-xl shadow-lg opacity-0 transition-opacity pointer-events-none whitespace-nowrap">
   Abriendo mensajes...
@@ -642,12 +655,19 @@ function showToast(msg) {
 
 // ─── Service Worker ───────────────────────────────────────────────────────────
 function registerSW() {
-  if ('serviceWorker' in navigator) {
-    const sw = `
-const CACHE = 'sc-v1';
+  if (!('serviceWorker' in navigator)) return;
+
+  // ── Bump this string on every release ──────────────────────────────────────
+  const APP_VERSION = 'sc-v1.1';
+  // ───────────────────────────────────────────────────────────────────────────
+
+  const sw = `
+const CACHE = '${APP_VERSION}';
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
-  self.skipWaiting();
+});
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys =>
@@ -660,10 +680,30 @@ self.addEventListener('fetch', e => {
     caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/')))
   );
 });`;
-    const blob = new Blob([sw], { type: 'application/javascript' });
-    const url  = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(url).catch(() => {});
-  }
+
+  const blob = new Blob([sw], { type: 'application/javascript' });
+  const url  = URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(url).then(reg => {
+    // New SW found and waiting — show update banner
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner(newSW);
+        }
+      });
+    });
+  }).catch(() => {});
+}
+
+function showUpdateBanner(newSW) {
+  const banner = document.getElementById('update-banner');
+  banner.classList.remove('hidden');
+  document.getElementById('update-btn').addEventListener('click', () => {
+    newSW.postMessage({ type: 'SKIP_WAITING' });
+    navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+  });
 }
 </script>
 </body>
