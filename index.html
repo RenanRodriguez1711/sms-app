@@ -372,10 +372,6 @@
 </div>
 
 <script>
-// ─── Security: password is stored obfuscated in Base64 ───────────────────────
-const _k = 'MTIzNDU2'; // base64("123456")
-function getKey() { return atob(_k); }
-
 // ─── App State ────────────────────────────────────────────────────────────────
 let deviceTo = '';
 let deviceNombre = '';
@@ -419,7 +415,7 @@ function dispatchSMS(body) {
     showToast('Sin número de dispositivo en el enlace.');
     return;
   }
-  const msg = getKey() + body;
+  const msg = body;
   const url  = 'sms:' + deviceTo + '?body=' + encodeURIComponent(msg);
   window.location.href = url;
   showToast('Abriendo Mensajes...');
@@ -513,9 +509,7 @@ function buildContactCard(slot, saved) {
       <button onclick="sendContactCmd(${slot})" class="w-full h-12 bg-primary text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
         Configurar Contacto ${slot}
       </button>
-      <button onclick="clearContact(${slot})" class="w-full h-10 bg-slate-100 text-slate-500 rounded-xl text-sm">
-        Borrar contacto
-      </button>
+      ${slot > 1 ? `<button onclick="clearContact(${slot})" class="w-full h-10 bg-slate-100 text-slate-500 rounded-xl text-sm">Borrar contacto</button>` : ''}
     </div>
   `;
   return div;
@@ -545,6 +539,7 @@ function sendContactCmd(slot) {
 }
 
 function clearContact(slot) {
+  if (slot === 1) { showToast('El Contacto 1 no se puede borrar.'); return; }
   saveContact(slot, { phone: '', sms: '0', call: '0' });
   renderContacts();
   showToast('Contacto ' + slot + ' eliminado.');
