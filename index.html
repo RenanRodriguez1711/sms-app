@@ -396,9 +396,22 @@ let deviceTipo = '';
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 (function init() {
   const params = new URLSearchParams(window.location.search);
-  deviceTo     = params.get('to')     || '';
-  deviceNombre = params.get('nombre') || 'Dispositivo';
-  deviceTipo   = params.get('tipo')   || '';
+
+  const urlTo     = params.get('to');
+  const urlNombre = params.get('nombre');
+  const urlTipo   = params.get('tipo');
+
+  // If URL has params, use them and persist for future launches from home screen
+  if (urlTo || urlNombre || urlTipo) {
+    if (urlTo)     localStorage.setItem('sc_device_to',     urlTo);
+    if (urlNombre) localStorage.setItem('sc_device_nombre', urlNombre);
+    if (urlTipo)   localStorage.setItem('sc_device_tipo',   urlTipo);
+  }
+
+  // Read from URL first, fall back to localStorage
+  deviceTo     = urlTo     || localStorage.getItem('sc_device_to')     || '';
+  deviceNombre = urlNombre || localStorage.getItem('sc_device_nombre') || 'Dispositivo';
+  deviceTipo   = urlTipo   || localStorage.getItem('sc_device_tipo')   || '';
 
   document.getElementById('header-subtitle').textContent = deviceNombre;
   document.getElementById('device-badge').textContent    = deviceTipo || 'SimpleCare';
