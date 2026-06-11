@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SimpleCare" />
+  <meta name="theme-color" content="#00c4aa" />
+  <title>SimpleCare Configurador</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#00c4aa', dark: '#00a08a', light: '#e0f7f4' },
+            surface: '#f8fafc',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body { overscroll-behavior: none; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .tab-btn.active svg { stroke: #00c4aa; }
+    .tab-btn.active span { color: #00c4aa; }
+    .accordion-body { display: none; }
+    .accordion-body.open { display: block; }
+    .modal-overlay { display: none; }
+    .modal-overlay.open { display: flex; }
+    input[type=range] { accent-color: #00c4aa; }
+    input[type=range]::-webkit-slider-thumb { width: 26px; height: 26px; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
+  </style>
+</head>
+<body class="bg-surface font-sans text-slate-800 max-w-lg mx-auto min-h-screen flex flex-col">
+
+<!-- Header -->
+<header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
+  <!-- SimpleCare dot-ring isotipo -->
+  <svg class="w-10 h-10 flex-shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="12" r="2.5" fill="rgb(7,163,151)"/>
+    <circle cx="56.6" cy="12.6" r="2.3" fill="rgb(5,171,155)"/>
+    <circle cx="63" cy="14.3" r="2.1" fill="rgb(4,178,158)"/>
+    <circle cx="69" cy="17.1" r="1.8" fill="rgb(2,186,161)"/>
+    <circle cx="74.4" cy="20.9" r="1.6" fill="rgb(1,193,164)"/>
+    <circle cx="79.1" cy="25.6" r="1.6" fill="rgb(1,193,164)"/>
+    <circle cx="82.9" cy="31" r="1.8" fill="rgb(2,186,161)"/>
+    <circle cx="85.7" cy="37" r="2.1" fill="rgb(4,178,158)"/>
+    <circle cx="87.4" cy="43.4" r="2.3" fill="rgb(5,171,155)"/>
+    <circle cx="88" cy="50" r="2.5" fill="rgb(7,163,151)"/>
+    <circle cx="87.4" cy="56.6" r="2.7" fill="rgb(8,155,148)"/>
+    <circle cx="85.7" cy="63" r="2.9" fill="rgb(10,147,145)"/>
+    <circle cx="82.9" cy="69" r="3.2" fill="rgb(11,140,142)"/>
+    <circle cx="79.1" cy="74.4" r="3.4" fill="rgb(13,132,139)"/>
+    <circle cx="74.4" cy="79.1" r="3.6" fill="rgb(14,125,136)"/>
+    <circle cx="69" cy="82.9" r="3.8" fill="rgb(16,117,133)"/>
+    <circle cx="63" cy="85.7" r="4.1" fill="rgb(17,109,130)"/>
+    <circle cx="56.6" cy="87.4" r="4.3" fill="rgb(19,102,127)"/>
+    <circle cx="50" cy="88" r="4.5" fill="rgb(20,94,124)"/>
+    <circle cx="43.4" cy="87.4" r="4.7" fill="rgb(22,87,121)"/>
+    <circle cx="37" cy="85.7" r="4.9" fill="rgb(23,79,118)"/>
+    <circle cx="31.1" cy="82.9" r="5.2" fill="rgb(25,71,115)"/>
+    <circle cx="25.6" cy="79.1" r="5.4" fill="rgb(26,64,112)"/>
+    <circle cx="23.1" cy="76.9" r="5.5" fill="rgb(27,60,110)"/>
+    <circle cx="20.9" cy="74.4" r="5.4" fill="rgb(26,64,112)"/>
+    <circle cx="17.1" cy="69" r="5.2" fill="rgb(25,71,115)"/>
+    <circle cx="14.3" cy="63" r="4.9" fill="rgb(23,79,118)"/>
+    <circle cx="12.6" cy="56.6" r="4.7" fill="rgb(22,87,121)"/>
+    <circle cx="12" cy="50" r="4.5" fill="rgb(20,94,124)"/>
+    <circle cx="12.6" cy="43.4" r="4.3" fill="rgb(19,102,127)"/>
+    <circle cx="14.3" cy="37" r="4.1" fill="rgb(17,109,130)"/>
+    <circle cx="17.1" cy="31" r="3.8" fill="rgb(16,117,133)"/>
+    <circle cx="20.9" cy="25.6" r="3.6" fill="rgb(14,125,136)"/>
+    <circle cx="25.6" cy="20.9" r="3.4" fill="rgb(13,132,139)"/>
+    <circle cx="31" cy="17.1" r="3.2" fill="rgb(11,140,142)"/>
+    <circle cx="37" cy="14.3" r="2.9" fill="rgb(10,147,145)"/>
+    <circle cx="43.4" cy="12.6" r="2.7" fill="rgb(8,155,148)"/>
+  </svg>
+  <div class="flex-1">
+    <h1 class="text-base font-bold leading-tight">
+      <span style="color:#1c3d6e">simple</span><span style="color:#00c4aa">Care</span>
+    </h1>
+    <p id="header-subtitle" class="text-xs text-slate-500 leading-tight">Cargando dispositivo...</p>
+  </div>
+  <span id="device-badge" class="text-xs font-semibold bg-primary-light text-primary px-2 py-1 rounded-full"></span>
+</header>
+
+<!-- Tab Content Area -->
+<main class="flex-1 overflow-y-auto pb-24">
+
+  <!-- TAB: INICIO -->
+  <div id="tab-inicio" class="tab-content active p-4 space-y-4">
+
+    <!-- Device card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-12 h-12 bg-primary-light rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 uppercase tracking-wide font-medium">Dispositivo a configurar</p>
+          <p id="inicio-nombre" class="text-lg font-bold text-slate-900">–</p>
+          <p id="inicio-numero" class="text-sm text-primary font-medium">–</p>
+        </div>
+      </div>
+      <div class="bg-slate-50 rounded-xl px-3 py-2 flex items-center gap-2">
+        <span class="text-xs text-slate-500">Modelo:</span>
+        <span id="inicio-modelo" class="text-sm font-semibold text-slate-700">–</span>
+      </div>
+    </div>
+
+    <!-- What can you do -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <h2 class="text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wide">¿Qué puedes hacer?</h2>
+      <ul class="space-y-3">
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800">Agregar contactos de emergencia</p>
+            <p class="text-xs text-slate-500">Hasta 5 personas que recibirán alertas de ayuda.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800">Calibrar sensor de caída</p>
+            <p class="text-xs text-slate-500">Ajusta cuán sensible detecta el dispositivo una caída.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800">Consultar ubicación y batería</p>
+            <p class="text-xs text-slate-500">Pide al dispositivo que te informe dónde está y cuánta batería tiene.</p>
+          </div>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <svg class="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 9.5a2.5 2.5 0 010 5M8.464 8.464a5 5 0 000 7.072"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-800">Activar zumbador de búsqueda</p>
+            <p class="text-xs text-slate-500">Hace sonar el dispositivo para encontrarlo en casa.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- How it works note -->
+    <div class="bg-primary-light rounded-2xl p-4 flex gap-3">
+      <svg class="w-5 h-5 text-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p class="text-xs text-primary leading-relaxed">Los botones abren tu aplicación de <strong>Mensajes</strong> (SMS) con el texto ya listo. Solo debes presionar <strong>Enviar</strong>. Se usa tu plan de telefonía normal, sin costos adicionales.</p>
+    </div>
+
+  </div>
+
+  <!-- TAB: DIRECTORIO -->
+  <div id="tab-directorio" class="tab-content p-4 space-y-3">
+
+    <div class="flex items-center justify-between mb-1">
+      <h2 class="text-base font-bold text-slate-900">Contactos de Emergencia</h2>
+      <button onclick="showHelp('help-contactos')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </button>
+    </div>
+    <p class="text-xs text-slate-500 mb-3">Configura quién recibirá un mensaje o llamada cuando el dispositivo detecte una emergencia.</p>
+
+    <div id="contactos-list" class="space-y-2"></div>
+
+  </div>
+
+  <!-- TAB: AJUSTES -->
+  <div id="tab-ajustes" class="tab-content p-4 space-y-4">
+
+    <h2 class="text-base font-bold text-slate-900 mb-1">Configuración del Equipo</h2>
+
+    <!-- Fall sensor -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-slate-800">Sensor de Caída</h3>
+        </div>
+        <button onclick="showHelp('help-caida')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+      </div>
+      <div class="mb-2 flex items-center justify-between">
+        <span class="text-xs text-slate-500">Menos sensible</span>
+        <span id="caida-val" class="text-sm font-bold text-primary">5</span>
+        <span class="text-xs text-slate-500">Más sensible</span>
+      </div>
+      <input id="caida-slider" type="range" min="1" max="10" value="5" class="w-full h-2 rounded-lg cursor-pointer mb-4" oninput="document.getElementById('caida-val').textContent=this.value" />
+      <button onclick="sendFallCmd()" class="w-full h-12 bg-primary text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+        Configurar Sensibilidad
+      </button>
+    </div>
+
+    <!-- Speaker Volume -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 9.5a2.5 2.5 0 010 5M8.464 8.464a5 5 0 000 7.072"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-slate-800">Volumen del Altavoz</h3>
+        </div>
+        <button onclick="showHelp('help-volumen')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+      </div>
+      <div class="mb-2 flex items-center justify-between">
+        <span class="text-xs text-slate-500">0%</span>
+        <span id="vol-val" class="text-sm font-bold text-primary">50%</span>
+        <span class="text-xs text-slate-500">100%</span>
+      </div>
+      <input id="vol-slider" type="range" min="0" max="100" value="50" step="10" class="w-full h-2 rounded-lg cursor-pointer mb-4" oninput="document.getElementById('vol-val').textContent=this.value+'%'" />
+      <button onclick="sendVolumeCmd()" class="w-full h-12 bg-primary text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+        Configurar Volumen
+      </button>
+    </div>
+
+    <!-- Speed Limit -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-rose-50 rounded-xl flex items-center justify-center">
+            <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-slate-800">Límite de Velocidad</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="showHelp('help-velocidad')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </button>
+          <!-- Toggle -->
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="speed-toggle" type="checkbox" class="sr-only peer" onchange="toggleSpeedUI()" />
+            <div class="w-11 h-6 bg-slate-200 peer-checked:bg-primary rounded-full transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
+          </label>
+        </div>
+      </div>
+      <div id="speed-inputs" class="opacity-40 pointer-events-none transition-opacity">
+        <label class="text-xs text-slate-500 mb-1 block">Velocidad máxima (km/h)</label>
+        <input id="speed-val" type="number" min="20" max="400" value="120" placeholder="ej: 120"
+          class="w-full h-12 border border-slate-200 rounded-xl px-4 text-lg font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary mb-4" />
+      </div>
+      <button onclick="sendSpeedCmd()" class="w-full h-12 bg-primary text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+        Configurar Velocidad
+      </button>
+    </div>
+
+  </div>
+
+  <!-- TAB: CONSULTAR -->
+  <div id="tab-consultar" class="tab-content p-4 space-y-4">
+
+    <h2 class="text-base font-bold text-slate-900 mb-1">Mantenimiento y Consultas</h2>
+    <p class="text-xs text-slate-500 mb-3">Estos botones le piden al dispositivo que te responda con información en tiempo real.</p>
+
+    <div class="space-y-3">
+      <!-- Ubicación -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Solicitar Ubicación</p>
+            <p class="text-xs text-slate-500">El dispositivo responderá con un enlace de Google Maps.</p>
+          </div>
+        </div>
+        <button onclick="sendCmd('loc')" class="w-full h-12 bg-green-500 text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+          Enviar Solicitud de Ubicación
+        </button>
+      </div>
+
+      <!-- Batería -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 6h1a2 2 0 012 2v8a2 2 0 01-2 2h-1M3 6h14v13H3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 10h4"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Consultar Batería</p>
+            <p class="text-xs text-slate-500">El dispositivo te informará el porcentaje de carga actual.</p>
+          </div>
+        </div>
+        <button onclick="sendCmd('battery')" class="w-full h-12 bg-blue-500 text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+          Consultar Nivel de Batería
+        </button>
+      </div>
+
+      <!-- FindMe -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 bg-violet-50 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 9.5a2.5 2.5 0 010 5M8.464 8.464a5 5 0 000 7.072"/></svg>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-slate-800">Buscar Equipo (Zumbador)</p>
+            <p class="text-xs text-slate-500">El dispositivo emitirá un sonido para que puedas encontrarlo.</p>
+          </div>
+        </div>
+        <button onclick="sendCmd('findme')" class="w-full h-12 bg-violet-500 text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+          Activar Zumbador
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- Bottom Tab Bar -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-lg mx-auto bg-white border-t border-slate-200 z-40 safe-bottom">
+  <div class="flex items-center justify-around px-2 pt-2 pb-1">
+
+    <button class="tab-btn active flex flex-col items-center gap-1 flex-1 py-1 rounded-xl" onclick="switchTab('inicio', this)">
+      <svg class="w-6 h-6" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="text-xs text-slate-400 font-medium">Inicio</span>
+    </button>
+
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1 py-1 rounded-xl" onclick="switchTab('directorio', this)">
+      <svg class="w-6 h-6" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="text-xs text-slate-400 font-medium">Directorio</span>
+    </button>
+
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1 py-1 rounded-xl" onclick="switchTab('ajustes', this)">
+      <svg class="w-6 h-6" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      <span class="text-xs text-slate-400 font-medium">Ajustes</span>
+    </button>
+
+    <button class="tab-btn flex flex-col items-center gap-1 flex-1 py-1 rounded-xl" onclick="switchTab('consultar', this)">
+      <svg class="w-6 h-6" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span class="text-xs text-slate-400 font-medium">Consultar</span>
+    </button>
+
+  </div>
+</nav>
+
+<!-- Help Modals -->
+<div class="modal-overlay fixed inset-0 bg-black/50 z-50 items-end justify-center" id="modal-overlay" onclick="closeModal()">
+  <div class="bg-white rounded-t-3xl w-full max-w-lg p-6 pb-10" onclick="event.stopPropagation()">
+    <div class="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-5"></div>
+    <h3 id="modal-title" class="text-lg font-bold text-slate-900 mb-3"></h3>
+    <p id="modal-body" class="text-sm text-slate-600 leading-relaxed"></p>
+    <button onclick="closeModal()" class="mt-6 w-full h-12 bg-slate-100 text-slate-700 rounded-xl font-semibold text-sm">Entendido</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-sm px-4 py-2 rounded-xl shadow-lg opacity-0 transition-opacity pointer-events-none whitespace-nowrap">
+  Abriendo mensajes...
+</div>
+
+<script>
+// ─── Security: password is stored obfuscated in Base64 ───────────────────────
+const _k = 'MTIzNDU2'; // base64("123456")
+function getKey() { return atob(_k); }
+
+// ─── App State ────────────────────────────────────────────────────────────────
+let deviceTo = '';
+let deviceNombre = '';
+let deviceTipo = '';
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  deviceTo     = params.get('to')     || '';
+  deviceNombre = params.get('nombre') || 'Dispositivo';
+  deviceTipo   = params.get('tipo')   || '';
+
+  document.getElementById('header-subtitle').textContent = deviceNombre;
+  document.getElementById('device-badge').textContent    = deviceTipo || 'SimpleCare';
+  document.getElementById('inicio-nombre').textContent   = deviceNombre;
+  document.getElementById('inicio-numero').textContent   = deviceTo   || 'Sin número asignado';
+  document.getElementById('inicio-modelo').textContent   = deviceTipo || '–';
+
+  renderContacts();
+  loadSliders();
+  registerSW();
+})();
+
+// ─── Tab Navigation ───────────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.querySelector('svg').setAttribute('stroke', '#94a3b8');
+    b.querySelector('span').style.color = '#94a3b8';
+  });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  btn.querySelector('svg').setAttribute('stroke', '#00c4aa');
+  btn.querySelector('span').style.color = '#00c4aa';
+}
+
+// ─── SMS Dispatch ─────────────────────────────────────────────────────────────
+function dispatchSMS(body) {
+  if (!deviceTo) {
+    showToast('Sin número de dispositivo en el enlace.');
+    return;
+  }
+  const msg = getKey() + body;
+  const url  = 'sms:' + deviceTo + '?body=' + encodeURIComponent(msg);
+  window.location.href = url;
+  showToast('Abriendo Mensajes...');
+}
+
+function sendCmd(cmd) { dispatchSMS(cmd); }
+
+function sendFallCmd() {
+  const val = document.getElementById('caida-slider').value;
+  savePref('caida', val);
+  dispatchSMS('fl1,' + val + ',1');
+}
+
+function sendVolumeCmd() {
+  const val = document.getElementById('vol-slider').value;
+  savePref('volumen', val);
+  dispatchSMS('Speakervolume' + val);
+}
+
+function sendSpeedCmd() {
+  const enabled = document.getElementById('speed-toggle').checked;
+  if (enabled) {
+    const val = parseInt(document.getElementById('speed-val').value, 10);
+    if (isNaN(val) || val < 20 || val > 400) {
+      showToast('Ingresa una velocidad entre 20 y 400 km/h.');
+      return;
+    }
+    savePref('speed', val);
+    savePref('speedOn', '1');
+    dispatchSMS('Speed1,' + val + 'km/h');
+  } else {
+    savePref('speedOn', '0');
+    dispatchSMS('Speed0,0km/h');
+  }
+}
+
+// ─── Contact Management ───────────────────────────────────────────────────────
+function renderContacts() {
+  const list = document.getElementById('contactos-list');
+  list.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const saved  = loadContact(i);
+    const card   = buildContactCard(i, saved);
+    list.appendChild(card);
+  }
+}
+
+function buildContactCard(slot, saved) {
+  const div  = document.createElement('div');
+  div.className = 'bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden';
+  div.id = 'contact-card-' + slot;
+
+  const phone   = saved.phone || '';
+  const smsOn   = saved.sms   === '1';
+  const callOn  = saved.call  === '1';
+  const hasData = phone.length > 0;
+
+  div.innerHTML = `
+    <button onclick="toggleAccordion(${slot})" class="w-full flex items-center gap-3 p-4 text-left">
+      <div class="w-10 h-10 rounded-xl ${hasData ? 'bg-primary-light' : 'bg-slate-100'} flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 ${hasData ? 'text-primary' : 'text-slate-400'}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="text-sm font-semibold text-slate-800">Contacto A${slot}</p>
+        <p class="text-xs text-slate-500">${hasData ? phone : 'Sin configurar'}</p>
+      </div>
+      <svg id="chevron-${slot}" class="w-5 h-5 text-slate-400 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </button>
+    <div id="acc-${slot}" class="accordion-body border-t border-slate-100 p-4 space-y-4">
+      <div>
+        <label class="text-xs font-medium text-slate-600 mb-1 block">Número de teléfono</label>
+        <input id="phone-${slot}" type="tel" placeholder="ej: +56912345678" value="${phone}"
+          class="w-full h-12 border border-slate-200 rounded-xl px-4 text-base text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary" />
+      </div>
+      <div class="flex gap-3">
+        <label class="flex-1 flex items-center gap-3 bg-slate-50 rounded-xl px-3 py-3 cursor-pointer">
+          <input id="sms-${slot}" type="checkbox" ${smsOn ? 'checked' : ''} class="w-5 h-5 accent-primary rounded" />
+          <div>
+            <p class="text-sm font-medium text-slate-700">SMS</p>
+            <p class="text-xs text-slate-500">Recibe mensajes</p>
+          </div>
+        </label>
+        <label class="flex-1 flex items-center gap-3 bg-slate-50 rounded-xl px-3 py-3 cursor-pointer">
+          <input id="call-${slot}" type="checkbox" ${callOn ? 'checked' : ''} class="w-5 h-5 accent-primary rounded" />
+          <div>
+            <p class="text-sm font-medium text-slate-700">Llamada</p>
+            <p class="text-xs text-slate-500">Recibe llamadas</p>
+          </div>
+        </label>
+      </div>
+      <button onclick="sendContactCmd(${slot})" class="w-full h-12 bg-primary text-white rounded-xl font-semibold text-sm active:scale-95 transition-transform">
+        Configurar Contacto A${slot}
+      </button>
+      <button onclick="clearContact(${slot})" class="w-full h-10 bg-slate-100 text-slate-500 rounded-xl text-sm">
+        Borrar contacto
+      </button>
+    </div>
+  `;
+  return div;
+}
+
+function toggleAccordion(slot) {
+  const body    = document.getElementById('acc-'     + slot);
+  const chevron = document.getElementById('chevron-' + slot);
+  const isOpen  = body.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.accordion-body').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('[id^="chevron-"]').forEach(el => el.style.transform = '');
+  if (!isOpen) {
+    body.classList.add('open');
+    chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+function sendContactCmd(slot) {
+  const phone = document.getElementById('phone-' + slot).value.trim();
+  if (!phone) { showToast('Ingresa un número de teléfono.'); return; }
+  const sms  = document.getElementById('sms-'  + slot).checked ? '1' : '0';
+  const call = document.getElementById('call-' + slot).checked ? '1' : '0';
+  saveContact(slot, { phone, sms, call });
+  renderContacts();
+  dispatchSMS('A' + slot + ',' + sms + ',' + call + ',' + phone);
+}
+
+function clearContact(slot) {
+  saveContact(slot, { phone: '', sms: '0', call: '0' });
+  renderContacts();
+  showToast('Contacto A' + slot + ' eliminado.');
+}
+
+// ─── Speed UI Toggle ──────────────────────────────────────────────────────────
+function toggleSpeedUI() {
+  const on = document.getElementById('speed-toggle').checked;
+  const inputs = document.getElementById('speed-inputs');
+  inputs.classList.toggle('opacity-40', !on);
+  inputs.classList.toggle('pointer-events-none', !on);
+}
+
+// ─── Persistence ──────────────────────────────────────────────────────────────
+function contactKey(slot) { return 'sc_contact_' + slot; }
+function saveContact(slot, data) { localStorage.setItem(contactKey(slot), JSON.stringify(data)); }
+function loadContact(slot) {
+  try { return JSON.parse(localStorage.getItem(contactKey(slot))) || {}; }
+  catch { return {}; }
+}
+function savePref(key, val) { localStorage.setItem('sc_pref_' + key, val); }
+function loadPref(key, def) { return localStorage.getItem('sc_pref_' + key) || def; }
+
+function loadSliders() {
+  const caida  = loadPref('caida',  '5');
+  const volumen = loadPref('volumen','50');
+  const speed  = loadPref('speed',  '120');
+  const speedOn = loadPref('speedOn','0');
+  document.getElementById('caida-slider').value = caida;
+  document.getElementById('caida-val').textContent = caida;
+  document.getElementById('vol-slider').value = volumen;
+  document.getElementById('vol-val').textContent = volumen + '%';
+  document.getElementById('speed-val').value = speed;
+  document.getElementById('speed-toggle').checked = speedOn === '1';
+  toggleSpeedUI();
+}
+
+// ─── Modals ───────────────────────────────────────────────────────────────────
+const helpContent = {
+  'help-contactos': {
+    title: '¿Para qué sirven los contactos?',
+    body: 'Cuando el dispositivo detecte una caída o el usuario presione el botón de pánico, avisará automáticamente a las personas que configures aquí. Puedes elegir si recibirán un mensaje de texto (SMS), una llamada telefónica, o ambas cosas.'
+  },
+  'help-caida': {
+    title: 'Sensibilidad de la detección de caídas',
+    body: 'Este control ajusta cuán fácil el dispositivo interpreta un movimiento brusco como una caída. Un valor bajo (1-3) solo reacciona a golpes muy fuertes. Un valor alto (8-10) puede reaccionar a movimientos normales del día a día. Te recomendamos comenzar en 5 y ajustar según la experiencia.'
+  },
+  'help-volumen': {
+    title: 'Volumen del altavoz del equipo',
+    body: 'Controla qué tan fuerte suena el dispositivo cuando recibe o hace una llamada. Si la persona mayor está en un ambiente ruidoso o tiene dificultad auditiva, sube el volumen al máximo.'
+  },
+  'help-velocidad': {
+    title: '¿Para qué sirve el límite de velocidad?',
+    body: 'Si activas esta función, el dispositivo te enviará una alerta cuando la persona (o el vehículo donde va) supere la velocidad que tú definas. Es útil, por ejemplo, si el dispositivo está en un auto y quieres saber si excede los límites de seguridad.'
+  }
+};
+
+function showHelp(id) {
+  const h = helpContent[id];
+  if (!h) return;
+  document.getElementById('modal-title').textContent = h.title;
+  document.getElementById('modal-body').textContent  = h.body;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ─── Service Worker ───────────────────────────────────────────────────────────
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    const sw = `
+const CACHE = 'sc-v1';
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/')))
+  );
+});`;
+    const blob = new Blob([sw], { type: 'application/javascript' });
+    const url  = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(url).catch(() => {});
+  }
+}
+</script>
+</body>
+</html>
